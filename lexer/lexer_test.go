@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"fmt"
 	"lemon/token"
 	"testing"
 )
@@ -24,7 +25,7 @@ if 5 < 10 {
 	return false;
 }
 
-let m = for let i = 0; i <= 5; i += 1 {
+let m = while let i = 0; i <= 5; i += 1 {
 	if false {
 		continue;
 	} else if i >= 2 {
@@ -120,7 +121,7 @@ func TestScanning(t *testing.T) {
 		{token.LET, 20, "let"},
 		{token.IDENT, 20, "m"},
 		{token.ASSIGN, 20, "="},
-		{token.FOR, 20, "for"},
+		{token.WHILE, 20, "while"},
 		{token.LET, 20, "let"},
 		{token.IDENT, 20, "i"},
 		{token.ASSIGN, 20, "="},
@@ -170,26 +171,29 @@ func TestScanning(t *testing.T) {
 		{token.SEMICOLON, 35, ";"},
 		{token.ILLEGAL, 37, "Unterminated string."},
 	}
-	
+
 	var l Lexer
 	l.Init(testInput)
 
-	for i, test := range tests {
-		tok := l.NextToken()
+	for i, tt := range tests {
+		name := fmt.Sprintf("test [%d]", i)
+		t.Run(name, func(t *testing.T) {
+			tok := l.NextToken()
 
-		if tok.Type != test.expectedType {
-			t.Fatalf("Tests[%d] - token type wrong. Expected %q, got %q",
-				i, test.expectedType, tok.Type)
-		}
+			if tok.Type != tt.expectedType {
+				t.Fatalf("token type wrong. Expected %q, got %q",
+					tt.expectedType, tok.Type)
+			}
 
-		if tok.Line != test.expectedLine {
-			t.Fatalf("Tests[%d] - token line wrong. Expected %d, got %d",
-				i, test.expectedLine, tok.Line)
-		}
+			if tok.Line != tt.expectedLine {
+				t.Fatalf("token line wrong. Expected %d, got %d",
+					tt.expectedLine, tok.Line)
+			}
 
-		if tok.Literal != test.expectedLiteral {
-			t.Fatalf("Tests[%d] - token literal wrong. Expected %q, got %q",
-				i, test.expectedLiteral, tok.Literal)
-		}
+			if tok.Literal != tt.expectedLiteral {
+				t.Fatalf("token literal wrong. Expected %q, got %q",
+					tt.expectedLiteral, tok.Literal)
+			}
+		})
 	}
 }

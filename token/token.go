@@ -2,7 +2,10 @@
 // programing language
 package token
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 type TokenType int
 
@@ -46,68 +49,70 @@ const (
 	LBRACKET // [
 	RBRACKET // ]
 
-	// Reserved keyword
+	// Reserved keywords
 	FN
 	LET
+	MUT
 	TRUE
 	FALSE
 	IF
 	ELSE
 	RETURN
-	FOR
+	WHILE
 	BREAK
 	CONTINUE
 )
 
 var tokens = [...]string{
-	ILLEGAL: "ILLEGAL",
+	ILLEGAL: "illegal",
 	EOF:     "EOF",
 
-	IDENT:  "IDENT",
-	INT:    "INT",
-	FLOAT:  "FLOAT",
-	STRING: "STRING",
+	IDENT:  "identifier",
+	INT:    "integer",
+	FLOAT:  "float",
+	STRING: "string",
 
-	ASSIGN:  "ASSIGN",
-	PLUS:    "PLUS",
-	MINUS:   "MINUS",
-	STAR:    "STAR",
-	SLASH:   "SLASH",
-	PERCENT: "PERCENT",
+	ASSIGN:  "=",
+	PLUS:    "+",
+	MINUS:   "-",
+	STAR:    "*",
+	SLASH:   "/",
+	PERCENT: "%",
 
-	NOT: "NOT",
-	LSS: "LSS",
-	GTR: "GTR",
+	NOT: "!",
+	LSS: "<",
+	GTR: ">",
 
-	EQL: "EQL",
-	NEQ: "NEQ",
-	LEQ: "LEQ",
-	GEQ: "GEQ",
-	AND: "AND",
-	OR:  "OR",
+	EQL: "==",
+	NEQ: "!=",
+	LEQ: "<=",
+	GEQ: ">=",
+	AND: "&&",
+	OR:  "||",
 
-	COMMA:     "COMMA",
-	DOT:       "DOT",
-	COLON:     "COLON",
-	SEMICOLON: "SEMICOLON",
+	COMMA:     ",",
+	DOT:       ".",
+	COLON:     ":",
+	SEMICOLON: ";",
 
-	LPAREN:   "LPAREN",
-	RPAREN:   "RPAREN",
-	LCURLY:   "LCURLY",
-	RCURLY:   "RCURLY",
-	LBRACKET: "LBRACKET",
-	RBRACKET: "RBRACKET",
+	LPAREN:   "(",
+	RPAREN:   ")",
+	LCURLY:   "{",
+	RCURLY:   "}",
+	LBRACKET: "[",
+	RBRACKET: "]",
 
-	FN:       "FN",
-	LET:      "LET",
-	TRUE:     "TRUE",
-	FALSE:    "FALSE",
-	IF:       "IF",
-	ELSE:     "ELSE",
-	RETURN:   "RETURN",
-	FOR:      "FOR",
-	BREAK:    "BREAK",
-	CONTINUE: "CONTINUE",
+	FN:       "fn",
+	LET:      "let",
+	MUT:      "mut",
+	TRUE:     "true",
+	FALSE:    "false",
+	IF:       "if",
+	ELSE:     "else",
+	RETURN:   "return",
+	WHILE:    "while",
+	BREAK:    "break",
+	CONTINUE: "continue",
 }
 
 func (ttype TokenType) String() string {
@@ -117,12 +122,13 @@ func (ttype TokenType) String() string {
 var keywords = map[string]TokenType{
 	"fn":       FN,
 	"let":      LET,
+	"mut":      MUT,
 	"true":     TRUE,
-	"fasle":    FALSE,
+	"false":    FALSE,
 	"if":       IF,
 	"else":     ELSE,
 	"return":   RETURN,
-	"for":      FOR,
+	"while":    WHILE,
 	"break":    BREAK,
 	"continue": CONTINUE,
 }
@@ -141,5 +147,9 @@ type Token struct {
 }
 
 func (t Token) String() string {
-	return fmt.Sprintf("{token.%s, %d, \"%s\"},", t.Type.String(), t.Line, t.Literal)
+	return fmt.Sprintf("%d-[%s '%s']", t.Line, t.Type.String(), t.Literal)
+}
+
+func (t Token) IsOneOf(expectedTypes ...TokenType) bool {
+	return slices.Contains(expectedTypes, t.Type)
 }

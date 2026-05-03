@@ -5,13 +5,14 @@ package lexer
 
 import (
 	"fmt"
+
 	"lemon/token"
 )
 
 type Lexer struct {
 	src     string
 	start   int // mark the beginning index of a token in the text source
-    current int // a cursor that iterate the text source byte by byte
+	current int // a cursor that iterate the text source byte by byte
 	line    int
 }
 
@@ -105,7 +106,7 @@ func (l *Lexer) NextToken() token.Token {
 		break
 	}
 illegal:
-	return l.makeError(fmt.Sprintf("Unexpect character '%c'.", char))
+	return l.makeError(fmt.Sprintf("unexpect character '%c'", char))
 }
 
 func (l *Lexer) isAtEnd() bool {
@@ -124,6 +125,7 @@ func (l *Lexer) advance() byte {
 	if l.isAtEnd() {
 		return 0
 	}
+
 	l.current += 1
 	return l.src[l.current-1]
 }
@@ -132,6 +134,7 @@ func (l *Lexer) peek() byte {
 	if l.isAtEnd() {
 		return 0
 	}
+
 	return l.src[l.current]
 }
 
@@ -139,6 +142,7 @@ func (l *Lexer) peekNext() byte {
 	if l.isAtEnd() {
 		return 0
 	}
+
 	return l.src[l.current+1]
 }
 
@@ -176,22 +180,22 @@ func (l *Lexer) skipWhitespaces() {
 func (l *Lexer) makeToken(ttype token.TokenType) token.Token {
 	var lit string
 	if ttype == token.STRING {
-		lit = l.src[l.start + 1:l.current - 1]
+		lit = l.src[l.start+1 : l.current-1]
 	} else {
 		lit = l.src[l.start:l.current]
 	}
 
 	return token.Token{
-		Type: ttype,
-		Line: l.line,
+		Type:    ttype,
+		Line:    l.line,
 		Literal: lit,
 	}
 }
 
 func (l *Lexer) makeError(message string) token.Token {
 	return token.Token{
-		Type: token.ILLEGAL,
-		Line: l.line,
+		Type:    token.ILLEGAL,
+		Line:    l.line,
 		Literal: message,
 	}
 }
@@ -200,15 +204,13 @@ func (l *Lexer) scanNumber() token.Token {
 	for isDigit(l.peek()) {
 		l.advance()
 	}
-	
+
 	ttype := token.INT
 	// Look for a fractional part
 	if l.peek() == '.' && isDigit(l.peekNext()) {
 		ttype = token.FLOAT
-
 		// Eat the '.'
 		l.advance()
-
 		for isDigit(l.peek()) {
 			l.advance()
 		}
@@ -221,6 +223,7 @@ func (l *Lexer) scanIdentifier() token.Token {
 	for isLetter(l.peek()) {
 		l.advance()
 	}
+
 	return l.makeToken(token.CheckKeyword(l.src[l.start:l.current]))
 }
 
@@ -233,7 +236,7 @@ func (l *Lexer) scanString() token.Token {
 	}
 
 	if l.isAtEnd() {
-		return l.makeError("Unterminated string.")
+		return l.makeError("unterminated string")
 	}
 
 	// Eat the closing quote.
