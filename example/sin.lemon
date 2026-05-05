@@ -18,7 +18,7 @@ let sin = fn(x, epsilon) {
 
         let mut i = 1;
         while abs(term) > epsilon {
-                term = -term * (x * x) / ((2 * x) * (2 * x + 1));
+                term = -term * (x * x) / ((2 * i) * (2 * i + 1));
                 sum = sum + term;
                 i = i + 1;
         }
@@ -26,4 +26,4 @@ let sin = fn(x, epsilon) {
         sum
 };
 
-sin(toRadian(30), 0.0000004)
+sin(toRadian(30), 0.0000000000001)

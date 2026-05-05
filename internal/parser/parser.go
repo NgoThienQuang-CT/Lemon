@@ -209,7 +209,7 @@ func (p *parser) registerInfix(ttype token.TokenType, fn infixParseFn) {
 
 func isBlockBased(node ast.Node) bool {
 	switch node.(type) {
-	case *ast.IfExpr, *ast.BlockExpr:
+	case *ast.IfExpr, *ast.BlockExpr, *ast.WhileExpr:
 		return true
 	default:
 		return false

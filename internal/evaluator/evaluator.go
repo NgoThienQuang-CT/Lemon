@@ -625,5 +625,6 @@ func (e *evaluator) evalBreakExpr(node *ast.BreakExpr) value.Value {
 }
 
 func (e *evaluator) evalContinueExpr(node *ast.ContinueExpr) value.Value {
+	node.Pos()
 	return &value.Continue{}
 }
