@@ -332,6 +332,38 @@ let mut sum = 0;
 	testIntegerValue(t, testEval(input), 23)
 }
 
+func TestStringEval(t *testing.T) {
+	input := "\"Hello, Lemon\""
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*value.String)
+	if !ok {
+		t.Fatalf("evaluated is not *value.String, got %T (%+v) instead",
+			evaluated, evaluated)
+	}
+
+	if str.Inner != "Hello, Lemon" {
+		t.Fatalf("str.Inner is not %s, got %s instead",
+			"Hello, Lemon", str.Inner)
+	}
+}
+
+func TestStringConcatenation(t *testing.T) {
+	input := `"Hello" + ", " + "Lemon"`
+
+	evaluated := testEval(input)
+	str, ok := evaluated.(*value.String)
+	if !ok {
+		t.Fatalf("evaluated is not *value.String, got %T (%+v) instead",
+			evaluated, evaluated)
+	}
+
+	if str.Inner != "Hello, Lemon" {
+		t.Fatalf("str.Inner is not %s, got %s instead",
+			"Hello, Lemon", str.Inner)
+	}
+}
+
 func testEval(input string) value.Value {
 	program, _ := parser.ParseProgram(input)
 	scope := value.NewScope()

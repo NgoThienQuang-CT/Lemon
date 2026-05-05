@@ -215,6 +215,40 @@ func TestBooleanLiteral(t *testing.T) {
 	}
 }
 
+func TestStringLiteral(t *testing.T) {
+	input := "\"hello world\";"
+
+	prog, errors := ParseProgram(input)
+	checkParserErrors(t, errors)
+
+	if len(prog.Statements) != 1 {
+		t.Fatalf("prog.Statements does not contain 1 statement, got %d instead",
+			len(prog.Statements))
+	}
+
+	if prog.LastValue != nil {
+		t.Fatalf("prog.LastValue is not nil, got %T (%+v) instead",
+			prog.LastValue, prog.LastValue)
+	}
+
+	stmt, ok := prog.Statements[0].(*ast.ExprStmt)
+	if !ok {
+		t.Fatalf("prog.Statements[0] is not *ast.ExprStmt, got %T instead",
+			prog.Statements[0])
+	}
+
+	literal, ok := stmt.Expression.(*ast.StringLit)
+	if !ok {
+		t.Fatalf("stmt.Expression is not *ast.StringLit, got %T instead",
+			stmt.Expression)
+	}
+
+	if literal.Value != "hello world" {
+		t.Errorf("literal.Value is not \"hello world\", got %q instead",
+			literal.Value)
+	}
+}
+
 func TestPrefixExpression(t *testing.T) {
 	tests := []struct {
 		input    string

@@ -74,6 +74,7 @@ func (p *parser) init(source string) {
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
 	p.registerPrefix(token.FLOAT, p.parseFloatLiteral)
+	p.registerPrefix(token.STRING, p.parseStringLiteral)
 	p.registerPrefix(token.NOT, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE, p.parseBooleanLiteral)
@@ -404,6 +405,13 @@ func (p *parser) parseBooleanLiteral() ast.Expr {
 	return &ast.BoolLit{
 		Token: p.current,
 		Value: p.currentIs(token.TRUE),
+	}
+}
+
+func (p *parser) parseStringLiteral() ast.Expr {
+	return &ast.StringLit{
+		Token: p.current,
+		Value: p.current.Literal,
 	}
 }
 

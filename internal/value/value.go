@@ -14,6 +14,7 @@ const (
 	IntegerValType  = "integer"
 	BooleanValType  = "boolean"
 	FloatValType    = "float"
+	StringValType   = "string"
 	UnitValType     = "unit"
 	ReturnValType   = "return"
 	FunctionValType = "function"
@@ -38,6 +39,10 @@ type (
 
 	Boolean struct {
 		Inner bool
+	}
+
+	String struct {
+		Inner string
 	}
 
 	Unit struct {
@@ -70,6 +75,7 @@ type (
 func (i *Integer) Type() ValueType  { return IntegerValType }
 func (b *Boolean) Type() ValueType  { return BooleanValType }
 func (f *Float) Type() ValueType    { return FloatValType }
+func (s *String) Type() ValueType   { return StringValType }
 func (u *Unit) Type() ValueType     { return UnitValType }
 func (r *Return) Type() ValueType   { return ReturnValType }
 func (e *Error) Type() ValueType    { return ErrorValType }
@@ -80,6 +86,7 @@ func (c *Continue) Type() ValueType { return ContinueValType }
 func (i *Integer) Inspect() string { return fmt.Sprintf("%d", i.Inner) }
 func (b *Boolean) Inspect() string { return fmt.Sprintf("%t", b.Inner) }
 func (f *Float) Inspect() string   { return fmt.Sprintf("%g", f.Inner) }
+func (s *String) Inspect() string  { return s.Inner }
 func (u *Unit) Inspect() string    { return "()" }
 func (r *Return) Inspect() string  { return r.Inner.Inspect() }
 func (e *Error) Inspect() string   { return e.Message }

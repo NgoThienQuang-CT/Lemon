@@ -23,7 +23,7 @@ const (
 func RunFile(filename string) {
 	path, err := filepath.Abs(filename)
 	if err != nil {
-		fmt.Printf("Error: Invalid path '%s'\n", os.Args[1])
+		fmt.Printf("Error: Invalid path '%s'\n", filename)
 		os.Exit(1)
 	}
 
@@ -46,7 +46,7 @@ func RunFile(filename string) {
 
 	program, error := parser.ParseProgram(string(input))
 	if len(error) != 0 {
-		fmt.Fprintf(os.Stderr, "At '%s':\n", filename)
+		fmt.Fprintf(os.Stderr, "At '%s':\n", path)
 		for _, msg := range error {
 			fmt.Fprint(os.Stderr, msg)
 		}
@@ -98,7 +98,7 @@ func StartRepl() {
 			prompt = DefaultPrompt
 		}
 
-		_, err := fmt.Fprint(os.Stdin, prompt)
+		_, err := fmt.Fprint(os.Stdout, prompt)
 		if err != nil {
 			fmt.Fprint(os.Stderr, err)
 			return

@@ -25,56 +25,43 @@ func Eval(node ast.Node, scope *value.Scope) value.Value {
 }
 
 func (e *evaluator) eval(node ast.Node) value.Value {
+	e.line = node.Pos()
 	switch node := node.(type) {
 	case *ast.Prog:
 		return e.evalProg(node)
 	case *ast.LetStmt:
-		e.line = node.Token.Line
 		return e.evalLetStmt(node)
 	case *ast.ExprStmt:
-		e.line = node.Token.Line
 		return e.evalExprStmt(node)
 	case *ast.Ident:
-		e.line = node.Token.Line
 		return e.evalIdent(node)
 	case *ast.IntLit:
-		e.line = node.Token.Line
 		return e.evalInteger(node)
 	case *ast.FloatLit:
-		e.line = node.Token.Line
 		return e.evalFloat(node)
 	case *ast.BoolLit:
-		e.line = node.Token.Line
 		return e.evalBoolean(node)
+	case *ast.StringLit:
+		return e.evalString(node)
 	case *ast.PrefixExpr:
-		e.line = node.Token.Line
 		return e.evalPrefixExpr(node)
 	case *ast.InfixExpr:
-		e.line = node.Token.Line
 		return e.evalInfixExpr(node)
 	case *ast.BlockExpr:
-		e.line = node.Token.Line
 		return e.evalBlockExpr(node)
 	case *ast.IfExpr:
-		e.line = node.Token.Line
 		return e.evalIfExpr(node)
 	case *ast.ReturnExpr:
-		e.line = node.Token.Line
 		return e.evalReturnExpr(node)
 	case *ast.FnLit:
-		e.line = node.Token.Line
 		return e.evalFunction(node)
 	case *ast.CallExpr:
-		e.line = node.Token.Line
 		return e.evalCallExpr(node)
 	case *ast.WhileExpr:
-		e.line = node.Token.Line
 		return e.evalWhileExpr(node)
 	case *ast.BreakExpr:
-		e.line = node.Token.Line
 		return e.evalBreakExpr(node)
 	case *ast.ContinueExpr:
-		e.line = node.Token.Line
 		return e.evalContinueExpr(node)
 	default:
 		return nil
@@ -218,6 +205,10 @@ func (e *evaluator) evalFloat(node *ast.FloatLit) value.Value {
 	return &value.Float{Inner: node.Value}
 }
 
+func (e *evaluator) evalString(node *ast.StringLit) value.Value {
+	return &value.String{Inner: node.Value}
+}
+
 func (e *evaluator) evalPrefixExpr(node *ast.PrefixExpr) value.Value {
 	right := e.eval(node.Right)
 	if isError(right) || right.Type() == value.ReturnValType {
@@ -290,10 +281,8 @@ func (e *evaluator) evalInfixExpr(node *ast.InfixExpr) value.Value {
 		return e.evalIntegerInfixExpr(node.Op, left, right)
 	case isNumber(left) && isNumber(right):
 		return e.evalNumberInfixExpr(node.Op, left, right)
-	case node.Op == "==":
-		return boolToBoolValue(left == right)
-	case node.Op == "!=":
-		return boolToBoolValue(left != right)
+	case left.Type() == value.StringValType && right.Type() == value.StringValType:
+		return e.evalStringInfixExpr(node.Op, left, right)
 	default:
 		return e.newError(
 			"operator '%s' cannot be applied to types %s and %s",
@@ -336,6 +325,10 @@ func (e *evaluator) evalBooleanInfixExpr(operator string, left value.Value, righ
 		return boolToBoolValue(l || r)
 	case "&&":
 		return boolToBoolValue(l && r)
+	case "!=":
+		return boolToBoolValue(l != r)
+	case "==":
+		return boolToBoolValue(l == r)
 	default:
 		return e.newError(
 			"operator '%s' cannot be applied to types %s and %s",
@@ -409,6 +402,25 @@ func (e *evaluator) evalNumberInfixExpr(operator string, left value.Value, right
 		return boolToBoolValue(l < r)
 	case "<=":
 		return boolToBoolValue(l <= r)
+	case "!=":
+		return boolToBoolValue(l != r)
+	case "==":
+		return boolToBoolValue(l == r)
+	default:
+		return e.newError(
+			"operator '%s' cannot be applied to types %s and %s",
+			operator, left.Type(), right.Type(),
+		)
+	}
+}
+
+func (e *evaluator) evalStringInfixExpr(operator string, left value.Value, right value.Value) value.Value {
+	l := left.(*value.String).Inner
+	r := right.(*value.String).Inner
+
+	switch operator {
+	case "+":
+		return &value.String{Inner: l + r}
 	case "!=":
 		return boolToBoolValue(l != r)
 	case "==":

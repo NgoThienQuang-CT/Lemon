@@ -1,0 +1,29 @@
+let pi = 3.1415926535;
+
+let abs = fn(x) {
+        if x < 0 {
+                -x
+        } else {
+                x
+        }
+};
+
+let toRadian = fn(x) {
+        x * pi / 180
+};
+
+let sin = fn(x, epsilon) {
+        let mut term = x;
+        let mut sum = x;
+
+        let mut i = 1;
+        while abs(term) > epsilon {
+                term = -term * (x * x) / ((2 * x) * (2 * x + 1));
+                sum = sum + term;
+                i = i + 1;
+        }
+
+        sum
+};
+
+sin(toRadian(30), 0.0000004)

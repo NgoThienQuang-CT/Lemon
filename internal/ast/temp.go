@@ -9,4 +9,5 @@ type Temp struct {
 
 func (t *Temp) statementNode()       {}
 func (t *Temp) TokenLiteral() string { return t.Token.Literal }
+func (t *Temp) Pos() int             { return t.Token.Line }
 func (t *Temp) String() string       { return "<temp>" }

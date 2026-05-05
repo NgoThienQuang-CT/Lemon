@@ -11,6 +11,7 @@ import (
 type (
 	Node interface {
 		TokenLiteral() string
+		Pos() int
 		String() string
 	}
 
@@ -55,6 +56,16 @@ func (p *Prog) String() string {
 	return out.String()
 }
 
+func (p *Prog) Pos() int {
+	if len(p.Statements) > 0 {
+		return p.Statements[0].Pos()
+	}
+	if p.LastValue != nil {
+		return p.LastValue.Pos()
+	}
+	return 0
+}
+
 type (
 	LetStmt struct {
 		Token   token.Token
@@ -74,6 +85,9 @@ func (es *ExprStmt) statementNode() {}
 
 func (ls *LetStmt) TokenLiteral() string  { return ls.Token.Literal }
 func (es *ExprStmt) TokenLiteral() string { return es.Token.Literal }
+
+func (ls *LetStmt) Pos() int  { return ls.Token.Line }
+func (es *ExprStmt) Pos() int { return es.Token.Line }
 
 func (ls *LetStmt) String() string {
 	var out strings.Builder
@@ -215,6 +229,22 @@ func (we *WhileExpr) TokenLiteral() string    { return we.Token.Literal }
 func (re *ReturnExpr) TokenLiteral() string   { return re.Token.Literal }
 func (be *BreakExpr) TokenLiteral() string    { return be.Token.Literal }
 func (ce *ContinueExpr) TokenLiteral() string { return ce.Token.Literal }
+
+func (i *Ident) Pos() int         { return i.Token.Line }
+func (bl *BoolLit) Pos() int      { return bl.Token.Line }
+func (il *IntLit) Pos() int       { return il.Token.Line }
+func (fl *FloatLit) Pos() int     { return fl.Token.Line }
+func (sl *StringLit) Pos() int    { return sl.Token.Line }
+func (pe *PrefixExpr) Pos() int   { return pe.Token.Line }
+func (ie *InfixExpr) Pos() int    { return ie.Token.Line }
+func (ie *IfExpr) Pos() int       { return ie.Token.Line }
+func (be *BlockExpr) Pos() int    { return be.Token.Line }
+func (fl *FnLit) Pos() int        { return fl.Token.Line }
+func (ce *CallExpr) Pos() int     { return ce.Token.Line }
+func (we *WhileExpr) Pos() int    { return we.Token.Line }
+func (re *ReturnExpr) Pos() int   { return re.Token.Line }
+func (be *BreakExpr) Pos() int    { return be.Token.Line }
+func (ce *ContinueExpr) Pos() int { return ce.Token.Line }
 
 func (i *Ident) String() string      { return i.Token.Literal }
 func (bl *BoolLit) String() string   { return bl.Token.Literal }
