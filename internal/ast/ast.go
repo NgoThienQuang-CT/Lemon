@@ -5,7 +5,7 @@ package ast
 import (
 	"strings"
 
-	"lemon/token"
+	"lemon/internal/token"
 )
 
 type (

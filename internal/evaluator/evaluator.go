@@ -4,8 +4,8 @@ package evaluator
 import (
 	"fmt"
 
-	"lemon/ast"
-	"lemon/value"
+	"lemon/internal/ast"
+	"lemon/internal/value"
 )
 
 var (

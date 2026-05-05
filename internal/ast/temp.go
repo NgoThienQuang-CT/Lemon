@@ -1,6 +1,6 @@
 package ast
 
-import "lemon/token"
+import "lemon/internal/token"
 
 type Temp struct {
 	Token token.Token

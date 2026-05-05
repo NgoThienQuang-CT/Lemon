@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"lemon/ast"
+	"lemon/internal/ast"
 )
 
 type ValueType string

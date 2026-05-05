@@ -3,8 +3,8 @@ package evaluator
 import (
 	"testing"
 
-	"lemon/parser"
-	"lemon/value"
+	"lemon/internal/parser"
+	"lemon/internal/value"
 )
 
 func TestEvalInteger(t *testing.T) {

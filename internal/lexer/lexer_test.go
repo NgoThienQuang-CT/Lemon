@@ -2,7 +2,7 @@ package lexer
 
 import (
 	"fmt"
-	"lemon/token"
+	"lemon/internal/token"
 	"testing"
 )
 

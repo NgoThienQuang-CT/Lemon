@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strconv"
 
-	"lemon/ast"
-	"lemon/lexer"
-	"lemon/token"
+	"lemon/internal/ast"
+	"lemon/internal/lexer"
+	"lemon/internal/token"
 )
 
 const (

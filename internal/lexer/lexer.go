@@ -6,7 +6,7 @@ package lexer
 import (
 	"fmt"
 
-	"lemon/token"
+	"lemon/internal/token"
 )
 
 type Lexer struct {

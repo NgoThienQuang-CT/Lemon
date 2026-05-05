@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"lemon/ast"
+	"lemon/internal/ast"
 )
 
 func TestLetStatements(t *testing.T) {
