@@ -9,6 +9,7 @@ import (
 
 	"lemon/evaluator"
 	"lemon/parser"
+	"lemon/value"
 )
 
 const (
@@ -17,9 +18,12 @@ const (
 )
 
 func Start(in io.Reader, out io.Writer) {
-	var buffer, prompt string
+	var prompt string
 	scanner := bufio.NewScanner(in)
 	level := 0
+	buffer := ""
+
+	scope := value.NewScope()
 
 	for {
 		if level > 0 {
@@ -48,17 +52,18 @@ func Start(in io.Reader, out io.Writer) {
 		level += (strings.Count(line, "(") - strings.Count(line, ")"))
 		level += (strings.Count(line, "{") - strings.Count(line, "}"))
 
-		if level >= 0 {
+		if level > 0 {
 			continue
 		}
 
-		program, errors := parser.ParseProgram(line)
+		program, errors := parser.ParseProgram(buffer)
 		if len(errors) != 0 {
 			printParserErrors(out, errors)
+			buffer = ""
 			continue
 		}
 
-		result := evaluator.Eval(program)
+		result := evaluator.Eval(program, scope)
 		if result == nil {
 			continue
 		}
@@ -68,6 +73,8 @@ func Start(in io.Reader, out io.Writer) {
 			fmt.Println(err)
 			continue
 		}
+
+		buffer = ""
 	}
 }
 

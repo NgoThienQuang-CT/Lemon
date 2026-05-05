@@ -220,7 +220,7 @@ func (l *Lexer) scanNumber() token.Token {
 }
 
 func (l *Lexer) scanIdentifier() token.Token {
-	for isLetter(l.peek()) {
+	for isLetter(l.peek()) || isDigit(l.peek()) {
 		l.advance()
 	}
 

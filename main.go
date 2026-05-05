@@ -5,8 +5,10 @@ import (
 	"os"
 	"os/user"
 
+	"lemon/evaluator"
 	"lemon/parser"
 	"lemon/repl"
+	"lemon/value"
 )
 
 const LEMON = `
@@ -50,7 +52,13 @@ func runFile(filename string) {
 		return
 	}
 
-	fmt.Println(program.String())
+	scope := value.NewScope()
+	result := evaluator.Eval(program, scope)
+	if result == nil {
+		return
+	}
+
+	fmt.Println(result.Inspect())
 }
 
 func runRepl() {
